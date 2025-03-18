@@ -5,7 +5,7 @@ include './delete_raw.php';
 
 
 if (isset($_POST["submit"])) {
-  $Date = $_POST['Date'];
+  $entry_date = $_POST['entry_date'];
   $name_supplier = $_POST['name_supplier'];
   $name_material = $_POST['name_material'];
   $van_wise = $_POST['van_wise'];
@@ -13,8 +13,8 @@ if (isset($_POST["submit"])) {
   $weight_material = $_POST['weight_material'];
   $bill_no  = $_POST['bill_no'];
   $total_amount = $_POST['total_amount'];
-  $sql = "INSERT INTO raw_material(Date,name_supplier,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
-            VALUES ('$Date','$name_supplier','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
+  $sql = "INSERT INTO raw_material(entry_date,name_supplier,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
+            VALUES ('$entry_date','$name_supplier','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
 
   $conn->query($sql);
 }
@@ -86,7 +86,7 @@ if (isset($_POST["submit"])) {
             <div class="form-row">
               <div class="form-group col-md-3">
                 <label for="date">Date</label>
-                <input type="date" class="form-control" id="date" name="Date" placeholder="Date">
+                <input type="date" class="form-control" id="entry_date" name="entry_date" placeholder="Date">
               </div>
               <div class="form-group col-md-3">
                 <label for="supplier_name">Name Of The Supplier</label>
@@ -143,7 +143,7 @@ if (isset($_POST["submit"])) {
           <?php while ($row = mysqli_fetch_assoc($result)) { ?>
             <tr>
               <td><?php echo $row['id']; ?></td>
-              <td><?php echo $row['Date']; ?></td>
+              <td><?php echo $row['entry_date']; ?></td>
               <td><?php echo $row['name_supplier']; ?></td>
               <td><?php echo $row['name_material']; ?></td>
               <td><?php echo $row['van_wise']; ?></td>
