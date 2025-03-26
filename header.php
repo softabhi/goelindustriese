@@ -1,4 +1,5 @@
 <?php
+include('backend/connect.php');
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
 $menuItems = [
@@ -11,7 +12,7 @@ $menuItems = [
             ["title" => "Stock Levels & Records", "url" => "#"]
         ],
     ],
-    
+
     [
         "menuTitle" => "Settings",
         "icon" => "fas fa-cogs",
@@ -19,7 +20,7 @@ $menuItems = [
             ["title" => "Profile", "url" => "profile.php"],
         ]
 
-    
+
     ]
 ];
 
@@ -36,7 +37,6 @@ $activePageInfo = array_reduce($menuItems, function ($carry, $menuItem) use ($cu
                 "activePage" => $page
             ];
         }
-      
     }
     return $carry;
 }, null);
@@ -106,13 +106,13 @@ $activePage = $activePageInfo['activePage'] ?? $currentPage;
         </div>
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-            <li class="nav-item" onclick="">
-                    <a href="index.php" class="nav-link <?= $currentPage === $activePage ? 'active' : '' ?>">
+                <li class="nav-item" onclick="">
+                    <a href="dashboard.php" class="nav-link <?= $currentPage === $activePage ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Home</p>
                     </a>
                 </li>
-                 <!-- <li class="nav-item" onclick="">
+                <!-- <li class="nav-item" onclick="">
                     <a href="index.php" class="nav-link <?= $currentPage === $activePage ? 'active' : '' ?>">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Admin</p>
@@ -124,27 +124,51 @@ $activePage = $activePageInfo['activePage'] ?? $currentPage;
                         <p>User</p>
                     </a>
                 </li> -->
-            <?php foreach ($menuItems as $menuItem): ?>
-                    <li class="nav-item has-treeview <?= $menuItem === $activeMenu ? 'menu-open' : '' ?>">
-                        <a class="nav-link <?= $menuItem === $activeMenu ? 'active' : '' ?>" href="#">
-                            <i class="nav-icon <?= $menuItem['icon'] ?>"></i>
-                            <p><?= $menuItem['menuTitle'] ?>
-                                <?= !empty($menuItem['pages']) ? '<i class="right fas fa-angle-left"></i>' : '' ?>
-                            </p>
-                        </a>
-                        <?php if (!empty($menuItem['pages'])): ?>
-                            <ul class="nav nav-treeview">
-                                <?php foreach ($menuItem['pages'] as $page): ?>
-                                    <li class="nav-item">
-                                        <a href="<?= $page['url'] ?>" class="nav-link <?= $page === $activePage ? 'active' : '' ?>">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p><?= $page['title'] ?></p>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php endif; ?>
-                    </li>
+
+
+
+                <?php
+                $sql = "select * from users where id=1";
+                $result = $conn->query($sql);
+                $row = mysqli_fetch_array($result);
+                //  echo $permission;
+                $permission = explode(",", $row['permission']);
+
+                // print_r($permission);
+
+                foreach ($menuItems as $menuItem): ?>
+
+                    <?php
+                    // print_r($menuItem['menuTitle']);
+                    // exit;
+                    if (in_array($menuItem['menuTitle'], $permission)) {
+                    ?>
+                        <li class="nav-item has-treeview <?= $menuItem === $activeMenu ? 'menu-open' : '' ?>">
+                            <a class="nav-link <?= $menuItem === $activeMenu ? 'active' : '' ?>" href="#">
+                                <i class="nav-icon <?= $menuItem['icon'] ?>"></i>
+                                <p><?= $menuItem['menuTitle'] ?>
+                                    <?= !empty($menuItem['pages']) ? '<i class="right fas fa-angle-left"></i>' : '' ?>
+                                </p>
+                            </a>
+                            <?php if (!empty($menuItem['pages'])): ?>
+                                <ul class="nav nav-treeview">
+                                    <?php foreach ($menuItem['pages'] as $page): ?>
+                                        <li class="nav-item">
+                                            <a href="<?= $page['url'] ?>" class="nav-link <?= $page === $activePage ? 'active' : '' ?>">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p><?= $page['title'] ?></p>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </li>
+                    <?php
+                    }
+                    ?>
+
+
+
                 <?php endforeach; ?>
                 <!-- <li class="nav-item" onclick="">
                     <a href="truckReport.php" class="nav-link <?= $currentPage === $activePage ? 'active' : '' ?>">
@@ -176,7 +200,7 @@ $activePage = $activePageInfo['activePage'] ?? $currentPage;
             confirmButtonText: 'Yes, log me out!'
         }).then((result) => {
             if (result.value) {
-                window.location.href = './index.php';
+                window.location.href = './backend/logout.php';
             }
         });
     }

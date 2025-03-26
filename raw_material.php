@@ -3,8 +3,10 @@
 include './update_raw.php';
 include './delete_raw.php';
 
+$successMessage = '';
+$errorMessage = '';
 
-if (isset($_POST["submit"])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $entry_date = $_POST['entry_date'];
   $name_supplier = $_POST['name_supplier'];
   $name_material = $_POST['name_material'];
@@ -13,12 +15,27 @@ if (isset($_POST["submit"])) {
   $weight_material = $_POST['weight_material'];
   $bill_no  = $_POST['bill_no'];
   $total_amount = $_POST['total_amount'];
-  $sql = "INSERT INTO raw_material(entry_date,name_supplier,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
-            VALUES ('$entry_date','$name_supplier','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
 
-  $conn->query($sql);
+  if (!empty($entry_date) && !empty($name_supplier)) {
+    $sql = "INSERT INTO raw_material(entry_date,name_supplier,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
+    VALUES ('$entry_date','$name_supplier','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
+    if ($conn->query($sql) === TRUE) {
+      // Set a session variable to indicate success
+      $_SESSION['submitted'] = true;
+
+      // Store success message
+      $successMessage = "Form submitted successfully!";
+    } else {
+      $errorMessage = "Error: " . $conn->error;
+    }
+  } else {
+    $errorMessage = "Please fill in all fields.";
+  }
 }
-
+if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
+  // Unset the session variable to prevent resubmission on page refresh
+  unset($_SESSION['submitted']);
+}
 ?>
 
 
@@ -81,6 +98,18 @@ if (isset($_POST["submit"])) {
     <?php include './header.php'; ?>
     <div class="content-wrapper">
       <section class="content">
+
+        <!-- Show success or error messages -->
+        <?php
+        if (!empty($successMessage)) {
+          echo "<p style='color: green;'>$successMessage</p>";
+        }
+
+        if (!empty($errorMessage)) {
+          echo "<p style='color: red;'>$errorMessage</p>";
+        }
+        ?>
+
         <div class="container-fluid">
           <form action="" method="POST">
             <div class="form-row">

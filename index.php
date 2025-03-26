@@ -1,4 +1,5 @@
 <?php
+session_start();
 include ('backend/connect.php');
 $msg = '';
 
@@ -10,6 +11,12 @@ if(isset($_POST['login'])){
 
      $sql = "select * from users where email = '$username' and password='$password' " ;
       $result = $conn->query($sql);
+      $row = mysqli_fetch_assoc($result);
+
+      $_SESSION['username'] = $row['name'];
+      $_SESSION['password'] = $row['password'];
+      
+
      print_r( $result);
 // exit;
 
@@ -144,7 +151,7 @@ if(isset($_POST['login'])){
 
     body {
         height: 100vh;
-        background-image: url('./assest/images/goel1.png');
+        background-image: url('./src/images/goel1.png');
         background-size: cover;
     /* background-position: center; */
     background-repeat: no-repeat;

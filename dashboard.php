@@ -1,3 +1,6 @@
+<?php
+include_once './backend/auth.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +15,7 @@
 
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
-    <?php include './header.php' ?>
+    <?php  include './header.php' ?>
     <div class="content-wrapper">
 
       <section class="content">
