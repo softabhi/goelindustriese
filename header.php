@@ -1,4 +1,5 @@
 <?php
+// session_start();
 include('backend/connect.php');
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
@@ -7,12 +8,23 @@ $menuItems = [
         "menuTitle" => "Material Management",
         "icon" => "fas fa-money-bill-wave",
         "pages" => [
-            ["title" => "Raw Material Management", "url" => "raw_material.php"],
+            ["title" => "Add Raw Material", "url" => "add_raw_material.php"],
+            ["title" => "Raw Material Report", "url" => "raw_material_report.php"],
             ["title" => "Supplier Management", "url" => "#"],
             ["title" => "Stock Levels & Records", "url" => "#"]
         ],
     ],
+    [
+        "menuTitle" => "User Management",
+        "icon" => "fas fa-cogs",
+        "pages" => [
+            ["title" => "Create User", "url" => "add_user.php"],
+            ["title" => "User Report", "url" => "#"],
+            ["title" => "Add Employe", "url" => "#"],
+        ]
 
+
+        ],
     [
         "menuTitle" => "Settings",
         "icon" => "fas fa-cogs",
@@ -128,14 +140,15 @@ $activePage = $activePageInfo['activePage'] ?? $currentPage;
 
 
                 <?php
-                $sql = "select * from users where id=1";
+                $user_id = $_SESSION['user_id'];
+                $sql = "select * from users where id = $user_id ";
                 $result = $conn->query($sql);
                 $row = mysqli_fetch_array($result);
                 //  echo $permission;
                 $permission = explode(",", $row['permission']);
 
-                // print_r($permission);
-
+//                 print_r($permission);
+// exit;
                 foreach ($menuItems as $menuItem): ?>
 
                     <?php

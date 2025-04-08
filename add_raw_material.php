@@ -1,9 +1,12 @@
 <?php
 include './backend/auth.php';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 // include './insert_raw.php';
 include './update_raw.php';
 include './delete_raw.php';
 
+// exit;
 $successMessage = '';
 $errorMessage = '';
 
@@ -11,15 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $entry_date = $_POST['entry_date'];
   $name_supplier = $_POST['name_supplier'];
   $name_material = $_POST['name_material'];
+  $raw_type = $_POST['raw_type'];
   $van_wise = $_POST['van_wise'];
   $without_van = $_POST['without_van'];
   $weight_material = $_POST['weight_material'];
   $bill_no  = $_POST['bill_no'];
   $total_amount = $_POST['total_amount'];
 
+
+  // print_r($_POST);
+  // exit;
+
   if (!empty($entry_date) && !empty($name_supplier)) {
-    $sql = "INSERT INTO raw_material(entry_date,name_supplier,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
-    VALUES ('$entry_date','$name_supplier','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
+    $sql = "INSERT INTO raw_material(entry_date,name_supplier,raw_material_type,name_material,van_wise,without_van,weight_material,bill_no,total_amount) 
+    VALUES ('$entry_date','$name_supplier','$raw_type','$name_material', '$van_wise','$without_van','$weight_material','$bill_no','$total_amount')";
     if ($conn->query($sql) === TRUE) {
       // Set a session variable to indicate success
       $_SESSION['submitted'] = true;
@@ -37,6 +45,8 @@ if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
   // Unset the session variable to prevent resubmission on page refresh
   unset($_SESSION['submitted']);
 }
+
+
 ?>
 
 
@@ -103,18 +113,18 @@ if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
         <!-- Show success or error messages -->
         <?php
         if (!empty($successMessage)) {
-          echo "<p style='color: green;'>$successMessage</p>";
+          echo "<h4 style='color: green;'>$successMessage</h4>";
         }
 
         if (!empty($errorMessage)) {
-          echo "<p style='color: red;'>$errorMessage</p>";
+          echo "<h4 style='color: red;'>$errorMessage</h4>";
         }
         ?>
 
         <div class="container-fluid">
           <form action="" method="POST">
             <div class="form-row">
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-2">
                 <label for="date">Date</label>
                 <input type="date" class="form-control" id="entry_date" name="entry_date" placeholder="Date">
               </div>
@@ -123,10 +133,22 @@ if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
                 <input type="text" class="form-control" id="supplier_name" name="name_supplier" placeholder="Name">
               </div>
               <div class="form-group col-md-3">
+                <label for="supplier_name">Type Of Raw Material</label>
+                <!-- <input type="text" class="form-control" id="supplier_name" name="name_supplier" placeholder="Name"> -->
+                <select name="raw_type" id="" class="form-control" >
+                  <option value="Building Structure">Building Structure</option>
+                  <option value="Duct">Duct</option>
+                  <option value="Pipes">Pipes</option>
+                  <option value="Filtters">Filtters</option>
+                  <option value="Hopper">Hopper</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2">
                 <label for="material_name">Name Of The Material</label>
                 <input type="text" class="form-control" id="material_name" name="name_material" placeholder="Material">
               </div>
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-2">
                 <label for="van_material">Van wise Material</label>
                 <input type="text" class="form-control" id="van_material" name="van_wise" placeholder="Material">
               </div>
@@ -150,10 +172,11 @@ if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
                 <input type="text" class="form-control" id="total" name="total_amount" placeholder="Amount">
               </div>
             </div>
-            <button type="submit" class="btn form-button btn-primary" id="raw_material" name="submit">Submittt</button>
+            <button type="submit" class="btn form-button btn-primary" id="raw_material" name="form_submit">Submit</button>
           </form>
         </div>
       </section>
+      
       <table class="table table-bordered" id="myTable">
         <thead>
           <tr>
@@ -170,7 +193,11 @@ if (isset($_SESSION['submitted']) && $_SESSION['submitted'] == true) {
           </tr>
         </thead>
         <tbody>
-          <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+          <?php
+          $sql = "SELECT * FROM `raw_material` WHERE 1";
+          $result = $conn->query($sql);
+        
+          while ($row = mysqli_fetch_assoc($result)) { ?>
             <tr>
               <td><?php echo $row['id']; ?></td>
               <td><?php echo $row['entry_date']; ?></td>

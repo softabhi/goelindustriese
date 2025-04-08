@@ -4,7 +4,7 @@ include ('backend/connect.php');
 $msg = '';
 
 if(isset($_POST['login'])){
-    echo "hlelo";
+    // echo "hlelo";
     // exit;
      $username=$_POST['username'];
      $password=$_POST['password'];
@@ -15,6 +15,7 @@ if(isset($_POST['login'])){
 
       $_SESSION['username'] = $row['name'];
       $_SESSION['password'] = $row['password'];
+      $_SESSION['user_id'] = $row['id'];
       
 
      print_r( $result);
